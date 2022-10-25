@@ -1,0 +1,173 @@
+<!doctype html>
+<html>
+  <head>
+    <title> Home </title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Quicksand">
+  </head>
+  <body>
+    <!-- page content -->
+    <a href="/logout"> Logout </a>
+    <a href="/create"> Create </a>
+    <a href="/api/delete"> Delete </a>
+    <a href="/settings"> Settings </a>
+    <div class="chats-container">
+      {% for chat in data['chats'] %}
+        {% if chat == request.cookies.get('selected') %}
+          <div class="message selected-chat"> <a href='/api/select?chat={{ chat }}'> {{ chat }} </a></div>
+        {% else %}
+          <div class="message"> <a href='/api/select?chat={{ chat }}'> {{ chat }} </a></div>
+        {% endif %}
+      {% endfor %}
+    </div>
+    <center>
+      {% if request.cookies.get('selected') != none %}
+      <div id="chat-box" class="chat-box">
+        {% for item in data['messages'] %}
+          <div class="message">
+            {% if request.cookies.get('username') == item['author'] %}
+              <div class="self-message"> 
+                <!-- set profile picture -->
+                <img class="profile-picture" alt="profile-picture" src="{{ data['profile'][item['author']]['profile'] }}"></img>
+                <div class="author-title"> {{ item['author'] }} </div>
+              </div>
+            {% else %}
+              <div>
+                <!-- set profile picture -->
+                <img class="profile-picture" alt="profile-picture" src="{{ data['profile'][item['author']]['profile'] }}"></img>
+                <div class="author-title"> {{ item['author'] }} </div>
+              </div>
+            {% endif %}
+            <!-- check if images -->
+            <!-- check if link -->
+            <!-- ignore spaces when insecting source, they're from jinja -->
+            {% if item['message'] == none %}
+              - {{ item['message'] }} 
+            {% else %}
+              {% if '.png' in item['message'] or '.jpg' in item['message'] %}
+                <img alt="user-image" src="{{ item['message'] }}"></img>
+              {% elif 'https://' in item['message'][:8] %}
+                <a href="{{ item['message'] }}" target="_blank"> {{ item['message'] }} </a>
+              {% else %}
+                {{ item['message'] }} 
+              {% endif %}
+            {% endif %}
+          </div>
+        {% endfor %}
+        <form id="form" action="/api/message" method="POST">
+          <input id="message" class="form-input message-box" type="text" name="message" autocomplete="off"/>
+        </form>
+      </div>
+      {% else %}
+      {% endif %}
+    </center>
+  </body>
+  <script src="https://code.jquery.com/jquery-3.5.1.js"
+          integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+          crossorigin="anonymous">
+  </script>
+  <script type="text/javascript">
+    // refresh chat by checking message history
+    // if there is a new message, append a div
+    async function chatRefresh() {
+      const raw = await fetch('/api/messagehistory')
+      const data = await raw.json()
+
+      // check if messages match
+      if (data[data.length-1]['message'] != last_fetched) {
+        last_fetched = data[data.length-1]['message']
+
+        // create new div
+        var element = document.createElement("div");
+        element.className = "message";
+
+        var div = document.createElement("div");
+        if (data[data.length-1]['author'] == "{{ request.cookies.get('username') }}") {
+          div.className = "self-message";
+        }
+        // append author div
+
+        var profile = document.createElement("img")
+        profile.className = "profile-picture"
+
+        const rd = await fetch('/api/profile?user='+data[data.length-1]['author'])
+        const link = await rd.text()
+
+        // set profile src to link
+        profile.src = link
+        
+        // append profile picture div
+        div.appendChild(profile)
+
+        // author title
+        var author = document.createElement("div")
+        author.className = "author-title"
+        author.appendChild(document.createTextNode(data[data.length-1]['author']))
+
+        div.appendChild(author);
+        element.appendChild(div);
+
+        // append message
+        if (last_fetched.includes(".png") || last_fetched.includes(".jpg")) {
+          var image = document.createElement("img")
+          image.src = last_fetched
+
+          // append image
+          element.appendChild(image)
+        } else if (last_fetched.slice(0, 8) == "https://") {
+          var a = document.createElement("a")
+          a.appendChild(document.createTextNode(last_fetched))
+          a.href = last_fetched
+          a.target = "_blank"
+
+          // append link
+          element.appendChild(a)
+        } else {
+          element.appendChild(element.appendChild(document.createTextNode(last_fetched))) 
+        }
+        document.getElementById('chat-box').appendChild(element);
+        
+        // scroll to the bottom again
+        scrollBottom(document.getElementById('chat-box'));
+      }
+    }
+
+    // function to scroll to the bottom of a div
+    function scrollBottom(element) {element.scroll({ top: element.scrollHeight, behavior: "auto"})}
+
+    // get last message by fetch
+    async function get_last_message() {
+      const raw = await fetch('/api/messagehistory')
+      const data = await raw.json()
+      return data[data.length-1]['message']
+    }
+
+    // turn a promise into data
+    const getLastFetched = async() => {last_fetched = await get_last_message()}
+
+    // send message and clear message-bar
+    $(document).on('submit','#form', function(e) {
+      e.preventDefault();
+
+      // create data
+      var data = new FormData();
+      data.append('message', $("#message").val());
+
+      // open POST request
+      let xhr = new XMLHttpRequest();
+      xhr.open("POST", "/api/message");
+  
+      xhr.send(data)
+      document.getElementById("form")[0].value = "";
+    });
+
+    // auto scroll to the bottom
+    scrollBottom(document.getElementById('chat-box'));
+    
+    let last_fetched
+    getLastFetched();
+
+    // refresh chat using thread
+    window.onload = setInterval(chatRefresh, 1000);
+  </script>
+</html>
