@@ -1,0 +1,179 @@
+body {
+  font-family: "Quicksand", sans-serif;
+  overflow: hidden;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1; 
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #c4c4c4; 
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #a1a1a1; 
+}
+
+a {
+  margin: 1vh;
+  text-decoration: none;
+  color: #4da3fe;
+}
+
+a:hover {text-decoration: underline;}
+
+img {
+  margin: 1vh;
+  width: auto;
+  height: auto;
+  max-width: 95%;
+  max-height: 95%;
+}
+
+/* div */
+.title {
+  font-size: 5vh;
+}
+
+.form-input {
+  /* style */
+  border-style: solid;
+  border: 2px;
+  border-radius: 2vh;
+  margin: 1vh;
+  padding: 1vh;
+
+  /* color */
+  border-color: transparent;
+  background: #f2f2f2;
+
+  /* text */
+  font-family: "Quicksand", sans-serif;
+}
+
+.form-input:focus, .message-box:focus {
+  outline: 0.4vh solid #4da3fe;
+}
+
+.banner {
+  /* position */
+  position: absolute;
+  bottom: 1vh;
+  
+  /* style */
+  border-style: solid;
+  border: 2px;
+  border-radius: 2vh;
+  margin: 1vh;
+  padding: 1vh;
+  width: 97vw;
+
+  /* color */
+  border-color: transparent;
+  background: #ff8080;
+}
+
+/* container */
+.chat-box {
+  /* position */
+  position: relative;
+  overflow-y: auto;
+  overflow-x: hidden;
+  top: -88vh;
+  left: 10%;
+
+  /* style */
+  border-style: solid;
+  border: 2px;
+  border-radius: 2vh;
+  padding-bottom: 7vh;
+  margin: 1vh;
+  height: 82vh;
+  width: 70vw;
+
+  /* color */
+  border-color: transparent;
+  background: #f2f2f2;
+}
+
+.message-box {
+  /* position */
+  position: fixed;
+  top: 89vh;
+  right: 6%;
+  
+  /* size */
+  height: 2.5vh;
+  width: 67%;
+
+  /* color */
+  background: #ffffff
+}
+
+.message {
+  position: relative;
+  
+  /* style */
+  object-fit: none;
+  word-wrap: break-word;
+  border-style: solid;
+  border: 2px;
+  border-radius: 1.5vh;
+  margin: 1vh;
+  padding: 1vh;
+  text-align: left;
+  width: 90%
+
+  /* color */
+  border-color: transparent;
+  background: #FFFFFF;
+}
+
+.self-message {color: #4da3fe;}
+
+.selected-chat {
+  background: #dbdbdb;
+}
+
+.chats-container {
+  /* position */
+  position: relative;
+  overflow-y: auto;
+  top: 2vh;
+  left: 0%;
+
+  /* style */
+  border-style: solid;
+  border: 2px;
+  border-radius: 2vh;
+  padding: 2vh;
+  margin: 1vh;
+  height: 85vh;
+  width: 20vw;
+
+  /* color */
+  border-color: transparent;
+  background: #f2f2f2;
+}
+
+.profile-picture {
+  /* size */
+  width: 3vh;
+  height: 3vh;
+  border-radius: 50%;
+}
+
+.author-title {
+  position: relative;
+  top: -2vh;
+  display: inline-block;
+}
