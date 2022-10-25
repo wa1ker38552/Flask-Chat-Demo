@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+  <head>
+    <title> Login </title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Quicksand">
+  </head>
+  <body>
+    <!-- page content -->
+    {% if not data is none %}
+    <div class="banner"> {{ data }} </div>
+    {% endif %}
+    <a href="/signup"> Signup </a>
+    <center>
+      <div class="title"> Login </div>
+      <form action="/login" method="POST">
+        <input class="form-input" type="text" name="username" placeholder="username" autocomplete="off"/><br>
+        <input class="form-input" type="password" name="password" placeholder="password" autocomplete="off"/><br>
+        <input class="form-input" type="submit" value="Login"/>
+      </form>
+    </center>
+  </body>
+</html>
